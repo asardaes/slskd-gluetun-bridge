@@ -42,7 +42,7 @@ is_set "SLSKD_PASSWORD" || exit 1
 
 if is_set "SGB_GTN_API_KEY_FILE" && test -s "$SGB_GTN_API_KEY_FILE"; then
     SGB_GTN_API_KEY=$(cat "$SGB_GTN_API_KEY_FILE")
-elif ! is_set "SGB_GTN_API_KEY"
+elif ! is_set "SGB_GTN_API_KEY"; then
     exit 1
 fi
 
