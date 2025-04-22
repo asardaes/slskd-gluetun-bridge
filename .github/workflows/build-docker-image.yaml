@@ -3,9 +3,6 @@ name: Docker image build
 on:
   push:
     branches: [ "main" ]
-    # Only trigger on master when these paths change
-    paths:
-      - 'Dockerfile'
     # Publish semver tags as releases.
     tags: [ 'v*' ]
   workflow_call:
