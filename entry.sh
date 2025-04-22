@@ -11,7 +11,7 @@ log() {
     echo "$(date +"%Y-%m-%d %H:%M:%S") [SGB] - ${1}"
 }
 
-is_empty() {
+is_set() {
     if [ -z "$(eval "echo \${$1}")" ]; then
         log "$1 is not set."
         return 1
@@ -36,13 +36,21 @@ gluetun_port() {
     fi
 }
 
-is_empty "SLSKD_CONFIG" || exit 1
-is_empty "SLSKD_USERNAME" || exit 1
-is_empty "SLSKD_PASSWORD" || exit 1
-is_empty "SGB_GTN_API_KEY" || exit 1
+is_set "SLSKD_CONFIG" || exit 1
+is_set "SLSKD_USERNAME" || exit 1
+is_set "SLSKD_PASSWORD" || exit 1
+
+if is_set "SGB_GTN_API_KEY_FILE" && test -s "$SGB_GTN_API_KEY_FILE"; then
+    SGB_GTN_API_KEY=$(cat "$SGB_GTN_API_KEY_FILE")
+elif ! is_set "SGB_GTN_API_KEY"
+    exit 1
+fi
 
 if [ ! -f "$SLSKD_CONFIG" ]; then
     log "File not found: $SLSKD_CONFIG"
+    exit 1
+elif ! grep -m 1 "listen_port" "$SLSKD_CONFIG" &>/dev/null; then
+    log "File $SLSKD_CONFIG does not specify 'listen_port', please set it explicitly with the default value."
     exit 1
 fi
 
