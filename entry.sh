@@ -58,7 +58,13 @@ while true; do
     if ! GTN_PORT=$(gluetun_port); then
         log "Could not get forwarded port from gluetun."
     else
-        log "Forwarded port retrieved from gluetun: $GTN_PORT"
+        SLSKD_PORT=$(grep -m 1 "listen_port" "$SLSKD_CONFIG" | cut -d ':' -f 2 | xargs)
+        if [ "$SLSKD_PORT" = "$GTN_PORT" ]; then
+            log "Forwarded port retrieved from gluetun ($GTN_PORT) is already configured in slskd."
+        else
+            sed -i '/listen_port/s/\( *listen_port\):.*/\1: '"$GTN_PORT/" "$SLSKD_CONFIG" && \
+                log "Updated $SLSKD_CONFIG with $(grep -m 1 "listen_port" "$SLSKD_CONFIG" | xargs)"
+        fi
     fi
 
     sleep "${SGB_PERIOD:-5m}"
