@@ -62,8 +62,9 @@ while true; do
         if [ "$SLSKD_PORT" = "$GTN_PORT" ]; then
             log "Forwarded port retrieved from gluetun ($GTN_PORT) is already configured in slskd."
         else
-            sed -i '/listen_port/s/\( *listen_port\):.*/\1: '"$GTN_PORT/" "$SLSKD_CONFIG" && \
-                log "Updated $SLSKD_CONFIG with $(grep -m 1 "listen_port" "$SLSKD_CONFIG" | xargs)"
+            sed '/listen_port/s/\( *listen_port\):.*/\1: '"$GTN_PORT/" "$SLSKD_CONFIG" >/tmp/slskd.yml \
+                && cp /tmp/slskd.yml "$SLSKD_CONFIG" \
+                && log "Updated $SLSKD_CONFIG with $(grep -m 1 "listen_port" "$SLSKD_CONFIG" | xargs)"
         fi
     fi
 
