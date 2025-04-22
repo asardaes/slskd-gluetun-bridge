@@ -63,7 +63,7 @@ while true; do
             log "Forwarded port retrieved from gluetun ($GTN_PORT) is already configured in slskd."
         else
             sed '/listen_port/s/\( *listen_port\):.*/\1: '"$GTN_PORT/" "$SLSKD_CONFIG" >/tmp/slskd.yml \
-                && cp /tmp/slskd.yml "$SLSKD_CONFIG" \
+                && cat /tmp/slskd.yml >"$SLSKD_CONFIG" \
                 && log "Updated $SLSKD_CONFIG with $(grep -m 1 "listen_port" "$SLSKD_CONFIG" | xargs)"
         fi
     fi
