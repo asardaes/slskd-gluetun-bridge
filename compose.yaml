@@ -1,0 +1,63 @@
+secrets:
+  wireguard_private_key:
+    file: wireguard_private_key.txt
+  gluetun_api_key:
+    file: gluetun_api_key.txt
+services:
+  gtn:
+    image: qmcgaw/gluetun:latest
+    container_name: gtn
+    restart: unless-stopped
+    hostname: gtn
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - TZ=${TIMEZONE}
+      - VPN_SERVICE_PROVIDER=protonvpn
+      - VPN_TYPE=wireguard
+      - VPN_PORT_FORWARDING=on
+      - PORT_FORWARD_ONLY=on
+      - SECURE_CORE_ONLY=off
+      - FIREWALL_INPUT_PORTS=5030
+      - DOT=off
+      - DNS_ADDRESS=10.2.0.1
+      - FIREWALL_DEBUG=off
+      - HEALTH_VPN_DURATION_INITIAL=10s
+      - HEALTH_SUCCESS_WAIT_DURATION=30s
+      - HTTPPROXY=off
+    secrets:
+      - wireguard_private_key
+    volumes:
+      - ${CONFIG_ROOT}/gluetun/config.toml:/gluetun/auth/config.toml:ro
+    ports:
+      - 5030:5030
+  slskd:
+    container_name: slskd
+    image: slskd/slskd:latest
+    restart: unless-stopped
+    network_mode: container:gtn
+    user: ${USER_ID}:${GROUP_ID}
+    env_file: slskd.env
+    volumes:
+      - ${CONFIG_ROOT}/slskd:/app
+    depends_on:
+      gtn:
+        condition: service_healthy
+  slskd-gluetun-bridge:
+    container_name: sgb
+    image: ghcr.io/asardaes/slskd-gluetun-bridge:main
+    restart: unless-stopped
+    environment:
+      - SLSKD_CONFIG=/mnt/slskd.yml
+      - SGB_GTN_API_KEY_FILE=/run/secrets/gluetun_api_key
+      - SGB_GTN_ADDR=http://gtn:8000
+    secrets:
+      - gluetun_api_key
+    volumes:
+      - ${CONFIG_ROOT}/slskd/slskd.yml:/mnt/slskd.yml
+    depends_on:
+      slskd:
+        condition: service_healthy
+networks: {}

@@ -3,6 +3,9 @@ name: Docker image build
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - Dockerfile
+      - entry.sh
     # Publish semver tags as releases.
     tags: [ 'v*' ]
   workflow_call:
