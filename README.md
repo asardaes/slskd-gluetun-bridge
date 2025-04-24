@@ -21,8 +21,8 @@ Optional environment variables:
 - `SGB_GTN_ADDR`: address to reach gluetun including scheme and port.
 - `SGB_GTN_PORT_INDEX`: index within the `ports` array in gluetun's response in case multiple ports are forwarded.
 - `SGB_PERIOD`: how often to check the port reported by gluetun and compare it with what's in `slskd.yml`.
-  It must be something `sleep` understand and defaults to `5m`.
+  It must be something `sleep` understands and defaults to `5m`.
 
 See [`compose.yaml`](compose.yaml) for an example,
 and note that the script runs as root because I set the secret file's permissions as 600,
-which docker reflects in the file created inside the container under `/run/secrets`.
+which docker reflects in the file created inside the container under `/run/secrets/`.
