@@ -53,6 +53,8 @@ fi
 while true; do
     if ! GTN_PORT=$(gluetun_port); then
         log "Could not get forwarded port from gluetun."
+    elif [ "$GTN_PORT" == "0" ]; then
+        log "Invalid port reported by gluetun, ignoring."
     else
         SLSKD_PORT=$(grep -m 1 "listen_port" "$SLSKD_CONFIG" | cut -d ':' -f 2 | xargs)
         if [ "$SLSKD_PORT" != "$GTN_PORT" ]; then
