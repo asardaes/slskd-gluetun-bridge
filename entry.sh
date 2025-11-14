@@ -21,7 +21,7 @@ is_set() {
 gluetun_port() {
     local GTN_PORTS
 
-    if ! GTN_PORTS=$(curl --silent --fail --show-error -H "X-API-Key: ${SGB_GTN_API_KEY}" "${GTN}/v1/openvpn/portforwarded"); then
+    if ! GTN_PORTS=$(curl --silent --fail --show-error -H "X-API-Key: ${SGB_GTN_API_KEY}" "${GTN}/v1/portforward"); then
         return 1
     fi
 
