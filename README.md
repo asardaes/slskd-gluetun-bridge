@@ -1,4 +1,4 @@
-NO LONGER NEEDED STARTING WITH slskk v0.24.4
+NO LONGER NEEDED STARTING WITH slskd v0.24.4
 
 A simple containerized script to sync [gluetun's](https://github.com/qdm12/gluetun) forwarded port with [slskd's](https://github.com/slskd/slskd) YAML config,
 updating the file directly without going through slskd's REST API.
